@@ -53,7 +53,7 @@ export default function ProfilePage() {
           <p>Notes: {team.notes}</p>
           <p>Invite Link:</p>
           <code className="text-blue-400">
-            {`${process.env.NEXT_PUBLIC_BASE_URL}/join/${team.invite_code}`}
+            {`https://test-lyart-beta-53.vercel.app/${team.invite_code}`}
           </code>
         </div>
       ))}
