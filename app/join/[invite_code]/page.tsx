@@ -1,59 +1,78 @@
 "use client"
 
+import { SignIn, useUser } from "@clerk/nextjs"
 import { useParams, useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
-import { useUser } from "@clerk/nextjs"
 import { supabase } from "@/lib/supabaseClient"
 
 export default function JoinTeamPage() {
-  const { invite_code } = useParams()
-  const { user } = useUser()
+  const { invite_code } = useParams() as { invite_code: string }
   const router = useRouter()
-  const [team, setTeam] = useState<any>(null)
+  const { user, isLoaded, isSignedIn } = useUser()
+  const [team, setTeam] = useState<any | null>(null)
+  const [message, setMessage] = useState<string | null>(null)
 
   useEffect(() => {
+    if (!invite_code) return
     const fetchTeam = async () => {
-      const { data, error } = await supabase
-        .from("registrations")
-        .select("*")
-        .eq("invite_code", invite_code)
-        .single()
-
-      if (!error) setTeam(data)
+      const { data, error } = await supabase.from("registrations").select("*").eq("invite_code", invite_code).single()
+      if (error) {
+        console.error(error)
+        setMessage("Invalid invite link.")
+      } else setTeam(data)
     }
     fetchTeam()
   }, [invite_code])
 
   async function handleJoin() {
-    if (!user || !team) return
+    if (!isLoaded) return
+    if (!isSignedIn || !user) {
+      setMessage("Please sign in to join this team.")
+      return
+    }
+    if (!team) return
+
+    // Check existing
+    const { data: existing } = await supabase
+      .from("team_members")
+      .select("*")
+      .eq("team_id", team.id)
+      .eq("user_id", user.id)
+
+    if (existing && existing.length > 0) {
+      setMessage("You have already requested or are part of this team.")
+      return
+    }
 
     const { error } = await supabase
       .from("team_members")
-      .insert([{ team_id: team.id, user_id: user.id }])
+      .insert([{ team_id: team.id, user_id: user.id, status: "pending" }])
 
-    if (!error) {
-      alert("Joined successfully!")
-      router.push("/profile")
+    if (error) {
+      console.error(error)
+      setMessage("Error sending join request.")
     } else {
-      alert(error.message)
+      setMessage("Join request submitted to the team leader.")
+      setTimeout(() => router.push("/profile"), 1500)
     }
   }
 
-  if (!team) return <p className="text-white p-6">Loading team...</p>
+  if (!team) return <div className="text-white p-6">{message ?? "Loading..."}</div>
 
   return (
     <div className="container mx-auto p-6 text-white">
-      <h1 className="text-2xl font-bold mb-4">Join Team: {team.team_name}</h1>
+      <h1 className="text-2xl font-bold mb-2">Join Team: {team.team_name}</h1>
       <p>Event: {team.event_choice}</p>
-      {user ? (
-        <button
-          onClick={handleJoin}
-          className="mt-4 px-4 py-2 bg-blue-500 rounded"
-        >
-          Join Team
-        </button>
+      {message && <p className="mt-3">{message}</p>}
+
+      {!isSignedIn ? (
+        <div className="mt-4">
+          <SignIn afterSignInUrl={`/join/${invite_code}`} />
+        </div>
       ) : (
-        <p className="mt-4 text-red-400">Please sign in to join.</p>
+        <div className="mt-4">
+          <button onClick={handleJoin} className="px-4 py-2 rounded bg-blue-500">Request to Join</button>
+        </div>
       )}
     </div>
   )
