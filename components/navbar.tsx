@@ -10,7 +10,6 @@ export default function Navbar() {
   return (
     <header className="sticky top-0 z-50 border-b border-white/10 backdrop-blur bg-[#0b0f17]/70">
       <div className="container mx-auto px-4 h-14 flex items-center justify-between">
-        {/* Logo */}
         <Link href="/" className="flex items-center gap-2">
           <span className="h-3 w-3 rounded-full bg-blue-500 shadow-[0_0_20px_2px_rgba(52,211,153,0.6)]" />
           <span className="font-semibold tracking-wider text-blue-400">
@@ -18,7 +17,6 @@ export default function Navbar() {
           </span>
         </Link>
 
-        {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center gap-6">
           <NavLink href="/about" label="About" />
           <NavLink href="/events" label="Events" />
@@ -32,7 +30,6 @@ export default function Navbar() {
           </Link>
 
           <SignedOut>
-            {/* Changed span → button to avoid React warning */}
             <SignInButton mode="redirect" signInUrl="/login">
               <button className="inline-flex h-9 items-center gap-2 rounded-md border border-fuchsia-500/40 bg-fuchsia-500/10 px-3 text-fuchsia-300 hover:bg-fuchsia-500/20 cursor-pointer">
                 Login
@@ -74,7 +71,6 @@ export default function Navbar() {
                 <MobileLink href="/register" label="Register" />
 
                 <SignedOut>
-                  {/* Changed span → button here as well */}
                   <SignInButton mode="redirect" signInUrl="/login">
                     <button className="inline-flex h-9 items-center justify-center rounded-md border border-fuchsia-500/40 bg-fuchsia-500/10 px-3 text-fuchsia-300 hover:bg-fuchsia-500/20 cursor-pointer">
                       Login

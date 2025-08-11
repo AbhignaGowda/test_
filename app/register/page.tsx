@@ -34,7 +34,7 @@ export default function RegisterPage() {
               <div className="text-zinc-300">
                 <p className="mb-2">Clerk keys missing. Add keys to enable registration login.</p>
                 <pre className="rounded bg-black/40 p-3 text-xs overflow-auto">{`NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_...
-CLERK_SECRET_KEY=sk_test_...`}</pre>
+CLERK_SECRET_KEY=sk_test_...`}</pre>/ make homepage public
               </div>
             )}
           </div>

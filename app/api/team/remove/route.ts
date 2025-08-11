@@ -1,4 +1,3 @@
-// app/api/team/remove/route.ts
 import { NextResponse } from "next/server";
 import { getAuth } from "@clerk/nextjs/server";
 import { supabaseServer } from "@/lib/supabaseServer";
@@ -8,7 +7,8 @@ export async function POST(req: Request) {
   const userId = auth.userId;
   if (!userId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const body = await req.json();
+  const body = await   // Prevent removing owner
+  req.json();
   const { team_id, member_user_id } = body;
   if (!team_id || !member_user_id) return NextResponse.json({ error: "Missing params" }, { status: 400 });
 
@@ -21,7 +21,6 @@ export async function POST(req: Request) {
   if (tErr || !team) return NextResponse.json({ error: "Team not found" }, { status: 404 });
   if (team.user_id !== userId) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
-  // Prevent removing owner
   if (member_user_id === userId) return NextResponse.json({ error: "Cannot remove leader" }, { status: 400 });
 
   const { error } = await supabaseServer

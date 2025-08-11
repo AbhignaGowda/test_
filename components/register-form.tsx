@@ -93,7 +93,6 @@ export default function RegisterForm() {
 
   return (
     <form onSubmit={onSubmit} className="space-y-6">
-      {/* team name + members */}
       <div className="grid gap-4 sm:grid-cols-2">
         <div className="space-y-2">
           <Label htmlFor="teamName">Team name</Label>
@@ -107,14 +106,12 @@ export default function RegisterForm() {
         </div>
       </div>
 
-      {/* college */}
       <div className="space-y-2">
         <Label htmlFor="college">College / University name</Label>
         <Input id="college" placeholder="Your College Name" value={data.college}
           onChange={(e) => setData((d) => ({ ...d, college: e.target.value }))} required />
       </div>
 
-      {/* event choice */}
       <div className="grid gap-4 sm:grid-cols-2">
         <div className="space-y-2">
           <Label>Choice of event</Label>
