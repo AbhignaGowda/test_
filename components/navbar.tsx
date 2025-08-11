@@ -69,6 +69,8 @@ export default function Navbar() {
                 <MobileLink href="/about" label="About" />
                 <MobileLink href="/events" label="Events" />
                 <MobileLink href="/contact" label="Contact" />
+                <NavLink href="/profile" label="MyEvents" />
+
                 <MobileLink href="/register" label="Register" />
 
                 <SignedOut>
